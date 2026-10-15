@@ -5,20 +5,31 @@
 
 void init_array(SqList &L)
 {
-  L.data = (int *)malloc(sizeof(int) * 4);
-  if (L.data == nullptr)
-  {
-    std::cout << "创建失败！";
-    return;
-  }
+  L.data = nullptr;
   L.length = 0;
-  L.capacity = 4;
-  std::cout << "数组创建成功！";
+  L.capacity = 0;
 }
 
 void input_num(SqList &L)
 {
-  
-
-  
+  int num;
+  std::cout << "请输入输入数字的数量：";
+  std::cin >> num;
+  if (num <= 0)
+  {
+    std::cout << "输入非法！";
+  }
+  L.data = (int *)malloc(sizeof(int) * num);
+  if (L.data = nullptr)
+  {
+    std::cout << "内存分配失败！";
+    return;
+  }
+  L.capacity = num;
+  L.length = 0;
+  for (int i = 0; i < num; i++)
+  {
+    std::cin >> L.data[i];
+    L.length++;
+  }
 }
