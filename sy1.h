@@ -14,13 +14,17 @@ public:
   SqList();
   ~SqList();
 
-  void input_num(SqList &L);
-  void delete_num(SqList &L);
-  void output_array(SqList &L);
-  void insert_num(SqList &L, int pos);
+  void input_num();
+  void delete_num_by_val();
+  void delete_num_by_pos();
+  void output_array();
+  void insert_num();
+  void append_num();
 
   void save_file(const char *filename);
   void load_file(const char *filename);
+
+  void menu();
 };
 
 #endif
