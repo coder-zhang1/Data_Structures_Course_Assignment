@@ -1,8 +1,9 @@
 #include "sy1.h"
 
-#include <iostream>
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 void SqList::menu()
 {
@@ -10,6 +11,7 @@ void SqList::menu()
   bool running = true;
   while (running)
   {
+    system("cls");
     std::cout << "1.输入数字覆盖当前数组" << "\n";
     std::cout << "2.在当前数组后追加元素" << "\n";
     std::cout << "3.按位置删除数字" << "\n";
@@ -18,7 +20,13 @@ void SqList::menu()
     std::cout << "6.输出当前数组" << "\n";
     std::cout << "0.退出程序" << "\n";
     std::cout << "输入选择:";
-    std::cin >> op;
+    if (!(std::cin >> op))
+    {
+      std::cin.clear();
+      std::cin.ignore(10000, '\n');
+      std::cout << "请输入数字\n";
+      continue;
+    }
     switch (op)
     {
     case 1:
@@ -55,13 +63,16 @@ void SqList::menu()
     {
       std::cout << "程序退出成功" << "\n";
       running = false;
-      break;
+      continue;
     }
     default:
     {
       std::cout << "输入非法" << "\n";
     }
     }
+    std::cout << "\n按回车继续...";
+    std::cin.ignore(10000, '\n');
+    std::cin.get();
   }
 }
 
@@ -126,15 +137,25 @@ void SqList::delete_num_by_val()
   std::cin >> val;
   // 双指针删除元素
   int j = 0;
+  bool has_del = false;
   for (int i = 0; i < length; i++)
   {
+    if (data[i] == val)
+      has_del = true;
     if (data[i] != val)
     {
       data[j++] = data[i];
     }
   }
   length = j;
-  std::cout << "已删除全部为" << val << "的元素" << "\n";
+  if (has_del)
+  {
+    std::cout << "已删除全部为" << val << "的元素" << "\n";
+  }
+  else
+  {
+    std::cout << "链表没有该数字" << "\n";
+  }
   return;
 }
 
@@ -148,6 +169,11 @@ void SqList::delete_num_by_pos()
   std::cout << "请输入要删除的位置：" << "\n";
   int pos;
   std::cin >> pos;
+  if (pos <= 0 || pos > length)
+  {
+    std::cout << "输入非法" << "\n";
+    return;
+  }
   for (int i = pos; i < length; i++)
   {
     data[i - 1] = data[i];
@@ -174,23 +200,23 @@ void SqList::output_array()
 
 void SqList::insert_num()
 {
-  if (length >= capacity)
+  if (data==nullptr||length >= capacity)
   {
     std::cout << "顺序表已满，无法插入" << "\n";
     return;
   }
-  std::cout << "请输入要插入的位置和值：" << "\n";
   int pos, val;
+  std::cout << "请输入要插入的位置和值：" << "\n";
   std::cin >> pos >> val;
-  if (pos <= 0 || pos > length)
+  if (pos <= 0 || pos > length+1)
   {
     std::cout << "插入位置非法" << "\n";
   }
-  for (int i = length; i > pos; i--)
+  for (int i = length; i >= pos; i--)
   {
     data[i] = data[i - 1];
   }
-  data[pos] = val;
+  data[pos-1] = val;
   length++;
 }
 void SqList::append_num()
@@ -232,13 +258,9 @@ void SqList::append_num()
   data = new_data;
   length = new_len;
 }
-void SqList::save_file(const char *filename)
+void SqList::save_file(const std::string &filename)
 {
-  if (data == nullptr || length == 0)
-  {
-    std::cout << "顺序表为空，无法保存" << "\n";
-    return;
-  }
+
   std::ofstream out(filename);
   if (!out.is_open())
   {
@@ -254,7 +276,7 @@ void SqList::save_file(const char *filename)
   std::cout << "文件保存成功" << "\n";
 }
 
-void SqList::load_file(const char *filename)
+void SqList::load_file(const std::string &filename)
 {
   std::ifstream in(filename);
   if (!in.is_open())
@@ -262,9 +284,9 @@ void SqList::load_file(const char *filename)
     std::cout << "文件打开失败" << "\n";
     return;
   }
-  int len;
+  int len, cnt = 0;
   in >> len;
-  if (len <= 0)
+  if (len < 0)
   {
     std::cout << "文件数据非法" << "\n";
     return;
@@ -282,11 +304,16 @@ void SqList::load_file(const char *filename)
     in.close();
     return;
   }
-  length = len;
   for (int i = 0; i < len; i++)
   {
-    in >> data[i];
+    if (!(in >> data[i]))
+    {
+      std::cout << "文件元素不足，仅读取 " << cnt << " 个\n";
+      break;
+    }
+    cnt++;
   }
+  length = cnt;
   in.close();
   std::cout << "文件读取成功" << "\n";
   return;

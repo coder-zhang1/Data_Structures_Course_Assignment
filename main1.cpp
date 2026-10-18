@@ -8,7 +8,6 @@ int main()
   SetConsoleCP(65001);
   SqList L;
   L.load_file("data1.txt");
-  L.output_array();
   L.menu();
   L.save_file("data1.txt");
 }

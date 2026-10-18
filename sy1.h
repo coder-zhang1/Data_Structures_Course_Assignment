@@ -1,6 +1,7 @@
 #ifndef SY1_H
 #define SY1_H
 
+#include <string>
 // 数组结构体
 
 class SqList
@@ -21,10 +22,13 @@ public:
   void insert_num();
   void append_num();
 
-  void save_file(const char *filename);
-  void load_file(const char *filename);
+  void save_file(const std::string &filename);
+  void load_file(const std::string &filename);
 
   void menu();
+
+  SqList(const SqList &) = delete;
+  SqList &operator=(const SqList &) = delete;
 };
 
 #endif
